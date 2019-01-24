@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <!-- Global's -->
     <string name="app_name">Smart Notes</string>
 </resources>

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="primary">@color/black_haze</color>
+    <color name="primary_dark">@color/black_haze</color>
+    <color name="accent">@color/pickled_bluewood</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_haze">#EAEEEC</color>
+    <color name="pickled_bluewood">#35525B</color>
 </resources>
