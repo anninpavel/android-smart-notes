@@ -1,0 +1,164 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+
+    def version_major = Integer.parseInt(version_major)
+    def version_minor = Integer.parseInt(version_minor)
+    def version_patch = Integer.parseInt(version_patch)
+    def version_build = Integer.parseInt(version_build)
+
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        applicationId "ru.github.anninpavel.smartnotes"
+        minSdkVersion 21
+        targetSdkVersion 28
+
+        versionCode version_major * 10000 + version_minor * 1000 + version_patch * 100 + version_build
+        versionName "${version_major}.${version_minor}.${version_patch}"
+
+        resConfigs "ru"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            versionNameSuffix "_${gitRevision}}"
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            testCoverageEnabled true
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+        test.java.srcDirs += "src/test/kotlin"
+        test.resources.srcDirs += "src/test/res"
+        androidTest.assets.srcDirs += "$projectDir/schemas"
+        androidTest.java.srcDirs += "src/androidTest/kotlin"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        preDexLibraries true
+        maxProcessCount 4
+        javaMaxHeapSize "2g"
+        jumboMode true
+    }
+
+    androidExtensions {
+        experimental true
+    }
+
+    applicationVariants.all { variant ->
+        def buildType = variant.buildType
+
+        def outDir = file("${rootDir}/out/${buildType.name}")
+        def mappingOutDir = file("${outDir}/mapping")
+
+        if (!outDir.exists()) {
+            outDir.mkdirs()
+        }
+        if (!mappingOutDir.exists()) {
+            mappingOutDir.mkdirs()
+        }
+
+        variant.assemble.doLast {
+            variant.outputs.each { output ->
+                copy {
+                    from output.outputFile
+                    into outDir
+                    rename { fileName -> "smartnotes-v${variant.versionName}.apk" }
+                }
+            }
+            if (variant.getBuildType().isMinifyEnabled()) {
+                copy {
+                    from variant.mappingFile
+                    into mappingOutDir
+                    rename { fileName -> "mapping_v${variant.versionName}.txt" }
+                }
+            }
+        }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions.freeCompilerArgs = ["+XXLanguage:-InlineClasses"]
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // AndroidX
+    implementation "androidx.annotation:annotation:1.0.1"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
+    implementation "androidx.core:core-ktx:1.1.0-alpha03"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha01"
+    implementation "androidx.room:room-runtime:2.1.0-alpha03"
+    implementation "com.google.android.material:material:1.1.0-alpha02"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha01"
+    kapt "androidx.room:room-compiler:2.1.0-alpha03"
+
+    // Dagger
+    implementation "com.google.dagger:dagger:2.21"
+    implementation "com.google.dagger:dagger-android:2.21"
+    implementation "com.google.dagger:dagger-android-support:2.21"
+    kapt "com.google.dagger:dagger-compiler:2.21"
+    kapt "com.google.dagger:dagger-android-processor:2.21"
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // Logger
+    implementation "com.jakewharton.timber:timber:4.7.1"
+
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxjava:2.2.6"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
+    implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
+
+    // Test
+    testImplementation "junit:junit:4.12"
+    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.2.1"
+    testImplementation "org.mockito:mockito-core:2.23.4"
+    testImplementation "org.mockito:mockito-inline:2.23.4"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    androidTestImplementation "com.jraska.livedata:testing:0.6.0"
+    androidTestImplementation "com.jraska.livedata:testing-ktx:0.6.0"
+    androidTestImplementation "org.mockito:mockito-android:2.23.4"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
+    androidTestImplementation "androidx.room:room-testing:2.1.0-alpha03"
+    androidTestImplementation "androidx.test:runner:1.1.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.1"
+}
+
+kapt {
+    generateStubs true
+}
