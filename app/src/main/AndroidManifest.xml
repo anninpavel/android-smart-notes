@@ -5,6 +5,7 @@
     package="ru.github.anninpavel.smartnotes">
 
     <application
+        android:name="smartnotes.SmartNotesApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,6 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="smartnotes.presentation.screens.notes.NotesActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
     </application>
 
