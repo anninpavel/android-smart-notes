@@ -1,0 +1,19 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+detekt {
+
+    config = files("$rootDir/lint/detekt-config.yml")
+    filters = ".*/resources/.*,.*/build/.*"
+
+    reports {
+
+        xml {
+            enabled = false
+        }
+
+        html {
+            enabled = true
+            destination = file("$rootDir/lint/reports/destination.html")
+        }
+    }
+}

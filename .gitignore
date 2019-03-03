@@ -19,6 +19,7 @@
 /out
 /proguard
 local.properties
+/lint/*/**
 
 
 ###############

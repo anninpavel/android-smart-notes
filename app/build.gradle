@@ -34,7 +34,9 @@ android {
     buildTypes {
 
         debug {
+            applicationIdSuffix ".debug"
             versionNameSuffix "-${versionDetails().gitHash}"
+
             debuggable true
             minifyEnabled false
             shrinkResources false
@@ -51,6 +53,8 @@ android {
 
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"
+        debug.java.srcDirs += "src/debug/kotlin"
+        release.java.srcDirs += "src/release/kotlin"
         test.java.srcDirs += "src/test/kotlin"
         test.resources.srcDirs += "src/test/res"
         androidTest.assets.srcDirs += "$projectDir/schemas"
@@ -67,6 +71,14 @@ android {
         maxProcessCount 4
         javaMaxHeapSize "2g"
         jumboMode true
+    }
+
+    lintOptions {
+        abortOnError true
+        warningsAsErrors true
+        checkReleaseBuilds true
+        noLines true
+        xmlReport false
     }
 
     androidExtensions {
@@ -104,8 +116,14 @@ android {
         }
     }
 
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xmaxerrs" << "500"
+        }
+    }
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions.freeCompilerArgs = ["+XXLanguage:-InlineClasses"]
+        kotlinOptions.freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
     }
 }
 
@@ -113,17 +131,17 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // AndroidX
-    implementation "androidx.annotation:annotation:1.0.1"
+    implementation "androidx.annotation:annotation:1.0.2"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
-    implementation "androidx.core:core-ktx:1.1.0-alpha03"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01"
-    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha01"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha01"
-    implementation "androidx.room:room-runtime:2.1.0-alpha03"
-    implementation "com.google.android.material:material:1.1.0-alpha02"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha01"
-    kapt "androidx.room:room-compiler:2.1.0-alpha03"
+    implementation "androidx.core:core-ktx:1.1.0-alpha04"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha02"
+    implementation "androidx.room:room-runtime:2.1.0-alpha04"
+    implementation "com.google.android.material:material:1.1.0-alpha04"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha02"
+    kapt "androidx.room:room-compiler:2.1.0-alpha04"
 
     // Dagger
     implementation "com.google.dagger:dagger:2.21"
@@ -137,6 +155,9 @@ dependencies {
 
     // Logger
     implementation "com.jakewharton.timber:timber:4.7.1"
+
+    // Navigation
+    implementation 'ru.terrakok.cicerone:cicerone:5.0.0'
 
     // ReactiveX
     implementation "io.reactivex.rxjava2:rxjava:2.2.6"
@@ -154,7 +175,7 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-android:2.23.4"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
-    androidTestImplementation "androidx.room:room-testing:2.1.0-alpha03"
+    androidTestImplementation "androidx.room:room-testing:2.1.0-alpha04"
     androidTestImplementation "androidx.test:runner:1.1.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.1.1"
 }
