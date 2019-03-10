@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/notesListAction"
+        android:icon="@drawable/ic_view_list_white_24dp"
+        android:title="@string/notes_action_list_view"
+        app:iconTint="@color/accent"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/notesGridAction"
+        android:icon="@drawable/ic_view_grid_white_24dp"
+        android:title="@string/notes_action_grid_view"
+        app:iconTint="@color/accent"
+        app:showAsAction="ifRoom" />
+
+</menu>

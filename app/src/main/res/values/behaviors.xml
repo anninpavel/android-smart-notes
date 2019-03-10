@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="behavior_appbar_elevation_scroll" translatable="false">smartnotes.presentation.share.behaviors.AppBarElevationScrollBehavior</string>
+</resources>

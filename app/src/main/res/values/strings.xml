@@ -3,4 +3,14 @@
 <resources>
     <!-- Global's -->
     <string name="app_name">Smart Notes</string>
+    <string name="label_error_unknown">Неизвестная ошибка</string>
+
+    <!-- Notes Screen -->
+    <string name="notes_title">@string/app_name</string>
+    <string name="notes_label_untitled">Без названия</string>
+    <string name="notes_label_empty_title">У вас нет не одной заметки :(</string>
+    <string name="notes_label_empty_subtitle">Нажмите "+", чтобы создать заметку</string>
+    <string name="notes_action_list_view">Один столбец</string>
+    <string name="notes_action_grid_view">Несколько столбцов</string>
+
 </resources>

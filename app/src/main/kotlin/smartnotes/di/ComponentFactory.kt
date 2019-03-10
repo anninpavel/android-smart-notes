@@ -1,6 +1,6 @@
 package smartnotes.di
 
-import android.app.Application
+import smartnotes.SmartNotesApplication
 import smartnotes.di.components.ApplicationComponent
 import smartnotes.di.components.DaggerApplicationComponent
 
@@ -16,11 +16,11 @@ class ComponentFactory {
      *
      * @param application Экземпляр приложения.
      */
-    fun build(application: Application): ApplicationComponent {
+    fun build(application: SmartNotesApplication): ApplicationComponent {
         return componentBuilder(application).build()
     }
 
-    private fun componentBuilder(application: Application): ApplicationComponent.Builder {
+    private fun componentBuilder(application: SmartNotesApplication): ApplicationComponent.Builder {
         return DaggerApplicationComponent.builder()
             .application(application)
     }

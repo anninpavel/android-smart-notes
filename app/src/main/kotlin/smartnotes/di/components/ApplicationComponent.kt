@@ -2,7 +2,6 @@
 
 package smartnotes.di.components
 
-import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -11,6 +10,7 @@ import smartnotes.SmartNotesApplication
 import smartnotes.di.modules.ActivityBindingModule
 import smartnotes.di.modules.ApplicationModule
 import smartnotes.di.modules.NavigationModule
+import smartnotes.di.modules.ViewModelBindingModule
 import javax.inject.Singleton
 
 /**
@@ -24,6 +24,7 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         ApplicationModule::class,
         ActivityBindingModule::class,
+        ViewModelBindingModule::class,
         NavigationModule::class
     ]
 )
@@ -34,7 +35,7 @@ interface ApplicationComponent : AndroidInjector<SmartNotesApplication> {
     interface Builder {
 
         @BindsInstance
-        fun application(app: Application): Builder
+        fun application(app: SmartNotesApplication): Builder
 
         fun build(): ApplicationComponent
     }

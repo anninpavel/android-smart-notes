@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/statesFactoryMainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <smartnotes.presentation.share.widgets.error.ErrorStateView
+        android:id="@+id/statesFactoryErrorStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <smartnotes.presentation.share.widgets.empty.EmptyStateView
+        android:id="@+id/statesFactoryEmptyStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <smartnotes.presentation.share.widgets.progress.ProgressStateView
+        android:id="@+id/statesFactoryProgressStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

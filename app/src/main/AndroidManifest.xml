@@ -20,7 +20,7 @@
             android:name="smartnotes.presentation.screens.splash.SplashActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Splash"
+            android:theme="@style/AppTheme.Page.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
