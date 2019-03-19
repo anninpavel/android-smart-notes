@@ -13,4 +13,8 @@
     <string name="notes_action_list_view">Один столбец</string>
     <string name="notes_action_grid_view">Несколько столбцов</string>
 
+    <!-- Note Detail Screen -->
+    <string name="note_detail_hint_title">Название</string>
+    <string name="note_detail_hint_text">Текст</string>
+
 </resources>

@@ -8,11 +8,12 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowBackground">@color/primary</item>
+        <item name="android:windowBackground">@color/athens_gray</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
         <item name="cardViewStyle">@style/AppTheme.CardView</item>
         <item name="bottomAppBarStyle">@style/AppTheme.BottomAppBar</item>
         <item name="floatingActionButtonStyle">@style/AppTheme.FloatingActionButton</item>
+        <item name="textInputStyle">@style/AppTheme.TextInputLayout</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.NoActionBar">

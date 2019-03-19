@@ -60,7 +60,7 @@ class NotesViewHolder(
             subTitle = rootViewGroup.resources.getString(R.string.notes_label_empty_subtitle)
         )
 
-        notesAdapter.onItemClick = onNoteClick
+        notesAdapter.onItemClick = { note -> onNoteClick?.invoke(note) }
         rootViewGroup.notesCreateFloatingActionButton.setOnClickListener { onCreateClick?.invoke() }
         rootViewGroup.notesBottomAppBar.setOnMenuItemClickListener { menuItem ->
             viewType = when (menuItem.itemId) {
@@ -72,7 +72,7 @@ class NotesViewHolder(
         }
     }
 
-    /** Привязывает данные к представлению. */
+    /** Этот метод вызывается для обновления контента представления. */
     fun onBind(data: List<Note>?) {
         notesAdapter.submitList(data)
         state = if (data.isNullOrEmpty()) State.Empty else State.Content

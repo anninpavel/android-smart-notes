@@ -7,6 +7,9 @@ package smartnotes.presentation.common
  */
 sealed class Response<out T> {
 
+    /** Состояние обработки операции. */
+    class Progress<out T> : Response<T>()
+
     /**
      * Состояние успешной обработки операции.
      *
@@ -20,9 +23,6 @@ sealed class Response<out T> {
      * @property error Ошибка полученая при обработке операции.
      */
     data class Failure<out T>(val error: Throwable) : Response<T>()
-
-    /** Состояние обработки операции. */
-    class Progress<out T> : Response<T>()
 
     companion object {
 

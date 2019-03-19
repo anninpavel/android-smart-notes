@@ -12,7 +12,7 @@ import java.util.*
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-inline class NoteId(val value: String)
+inline class NoteId(val value: UUID)
 
 /**
  * Модель данных "Заметка".
@@ -26,7 +26,7 @@ inline class NoteId(val value: String)
  */
 @Parcelize
 data class Note(
-    private val _id: String,
+    private val _id: UUID,
     val title: String,
     val text: String,
     val created: Date

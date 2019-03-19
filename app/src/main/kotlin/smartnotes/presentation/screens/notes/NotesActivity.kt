@@ -21,7 +21,12 @@ import kotlin.properties.Delegates
 /**
  * Экрана списка заметок.
  *
+ * @property viewModelFactory Фабрика предоставления [NotesViewModel].
+ * @property navigatorHolder Привязывает навигатор к жизненому циклу экрана.
+ * @property router Маршрутизатор по приложению.
  * @property viewHolder Представление экрана.
+ * @property viewModel ViewModel экрана.
+ * @property navigator Навигатор экрана.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -48,6 +53,10 @@ class NotesActivity : AppCompatActivity() {
         }
 
         viewModel.observeNotes()
+    }
+
+    override fun onBackPressed() {
+        router.exit()
     }
 
     /** Подписывает наблюдателя к коллекции заметок. */

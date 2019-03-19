@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="primary">@color/black_haze</color>
-    <color name="primary_dark">@color/black_haze</color>
+    <color name="primary">@color/pickled_bluewood</color>
+    <color name="primary_dark">@color/athens_gray</color>
     <color name="accent">@color/pickled_bluewood</color>
 
     <color name="text_primary">@color/black_alpha_87</color>
@@ -15,6 +15,6 @@
     <color name="black_alpha_87">#DE000000</color>
     <color name="black_alpha_60">#99000000</color>
     <color name="black_alpha_33">#54000000</color>
-    <color name="black_haze">#F4F4F5</color>
+    <color name="athens_gray">#F4F4F5</color>
     <color name="pickled_bluewood">#35525B</color>
 </resources>

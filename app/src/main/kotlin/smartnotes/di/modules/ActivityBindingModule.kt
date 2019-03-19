@@ -4,6 +4,7 @@ package smartnotes.di.modules
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import smartnotes.presentation.screens.note.NoteDetailActivity
 import smartnotes.presentation.screens.notes.NotesActivity
 import smartnotes.presentation.screens.splash.SplashActivity
 
@@ -16,4 +17,7 @@ interface ActivityBindingModule {
 
     @ContributesAndroidInjector
     fun bindNotesActivity(): NotesActivity
+
+    @ContributesAndroidInjector
+    fun bindNoteDetailActivity(): NoteDetailActivity
 }

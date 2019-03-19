@@ -13,6 +13,7 @@
         <item name="contentInsetEnd">16dp</item>
         <item name="contentInsetStartWithNavigation">72dp</item>
         <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">@color/primary_dark</item>
     </style>
 
     <style name="AppTheme.CardView">
@@ -26,13 +27,22 @@
     </style>
 
     <style name="AppTheme.BottomAppBar" parent="@style/Widget.MaterialComponents.BottomAppBar">
-        <item name="android:backgroundTint">@color/primary</item>
+        <item name="android:backgroundTint">@color/primary_dark</item>
     </style>
 
     <style name="AppTheme.FloatingActionButton" parent="Widget.Design.FloatingActionButton">
         <item name="tint">@color/white</item>
         <item name="backgroundTint">@color/accent</item>
         <item name="fabSize">normal</item>
+    </style>
+
+    <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/accent</item>
+        <item name="hintTextColor">@color/accent</item>
+    </style>
+
+    <style name="Asd">
+        <item name="colorPrimary">@color/accent</item>
     </style>
 
     <style name="AppTheme.TextAppearance" />
