@@ -47,10 +47,11 @@ class NotesActivity : AppCompatActivity() {
         viewModel = injectViewModel(viewModelFactory)
         navigatorHolder.observe(this, navigator)
 
-        viewHolder = NotesViewHolder(notesMainContainer) { NotesAdapter.ViewType.LIST }.apply {
+        viewHolder = NotesViewHolder(notesMainContainer) { viewModel.viewType }.apply {
             onNoteClick = { router.navigateTo(Screens.EditNote(value = it)) }
             onCreateClick = { router.navigateTo(Screens.CreateNote()) }
             onRemoveClick = { viewModel.delete(values = it) }
+            onViewTypeChange = { viewModel.viewType = it }
         }
 
         viewModel.observeNotes()

@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
-import smartnotes.presentation.screens.notes.NotesAdapter.ViewType.GRID
-import smartnotes.presentation.screens.notes.NotesAdapter.ViewType.LIST
+import smartnotes.domain.values.ViewType
 import smartnotes.presentation.share.widgets.recyclerview.selection.SelectionItemKeyProvider
 import smartnotes.utils.kotlin.Predicate
 
@@ -54,13 +53,6 @@ class NotesAdapter(
     override fun getPosition(key: Note): Int {
         return currentList.indexOf(key)
     }
-
-    /**
-     * Тип представления списка.
-     *  - [LIST] Отображеине в виде списка;
-     *  - [GRID] Отображеине в виде таблицы.
-     */
-    enum class ViewType { LIST, GRID }
 
     /**
      * Возвращает [ViewType] в сооствествии с индексом,

@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import smartnotes.domain.models.Note
+import smartnotes.domain.values.ViewType
 import smartnotes.presentation.common.Response
 import smartnotes.presentation.usecase.NoteUseCase
+import smartnotes.presentation.usecase.UserUseCase
 import javax.inject.Inject
 
 /**
@@ -17,11 +19,13 @@ import javax.inject.Inject
  * @property _liveDeleteNotes Содержит результат операции удаления заметок, обернуто в держатель данных [LiveData].
  *
  * @property liveDeleteNotes Предоставляет публичный интерфейс [_liveDeleteNotes].
+ * @property viewType Тип отображения списка на представлении.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
 class NotesViewModel @Inject constructor(
-    private val notes: NoteUseCase
+    private val notes: NoteUseCase,
+    private val user: UserUseCase
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
@@ -31,6 +35,10 @@ class NotesViewModel @Inject constructor(
 
     val liveDeleteNotes: LiveData<Response<Unit>>
         get() = _liveDeleteNotes
+
+    var viewType: ViewType
+        get() = user.fetchViewType()
+        set(value) = user.saveViewType(value)
 
     override fun onCleared() {
         super.onCleared()

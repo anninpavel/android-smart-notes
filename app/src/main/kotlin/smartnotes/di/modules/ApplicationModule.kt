@@ -6,7 +6,9 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import smartnotes.SmartNotesApplication
+import smartnotes.data.cache.PreferenceSource
 import smartnotes.utils.rx.SchedulerFacade
+import javax.inject.Singleton
 
 /**
  * Основной модуль приложения.
@@ -24,6 +26,12 @@ class ApplicationModule {
     @Provides
     fun provideContext(application: SmartNotesApplication): Context {
         return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferenceSource(context: Context): PreferenceSource {
+        return PreferenceSource(context)
     }
 
     @Provides

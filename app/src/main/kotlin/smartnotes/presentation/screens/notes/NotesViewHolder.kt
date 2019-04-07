@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.activity_notes.view.*
 import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
+import smartnotes.domain.values.ViewType
 import smartnotes.presentation.common.viewholder.ViewHolder
 import smartnotes.presentation.share.widgets.recyclerview.selection.createSelectionTracker
 import smartnotes.utils.extensions.isNull
@@ -35,26 +36,28 @@ import smartnotes.utils.kotlin.weak
  * @property onNoteClick Событие, выбрана заметка.
  * @property onCreateClick Событие, создание новой заметки.
  * @property onRemoveClick Событие, удаление выбранных заметок.
+ * @property onViewTypeChange Событие, изменен тип отображения списка.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
 class NotesViewHolder(
     private val rootViewGroup: ViewGroup,
-    viewTypeSupplier: Supplier<NotesAdapter.ViewType>
+    viewTypeSupplier: Supplier<ViewType>
 ) : ViewHolder(rootViewGroup) {
 
     private val notesTracker: SelectionTracker<Note>
-    private val notesAdapter = NotesAdapter(viewType = NotesAdapter.ViewType.GRID)
+    private val notesAdapter = NotesAdapter(viewType = ViewType.GRID)
     private var actionMode by weak<ActionMode>()
 
-    private var viewType: NotesAdapter.ViewType
+    private var viewType: ViewType
         get() = notesAdapter.viewType
         set(value) {
+            onViewTypeChange?.invoke(value)
             rootViewGroup.notesRecyclerView.layoutManager = value.layoutManager(rootViewGroup.context)
             notesAdapter.viewType = value
             with(rootViewGroup.notesBottomAppBar) {
-                menu?.findItem(R.id.notesListAction)?.isVisible = value != NotesAdapter.ViewType.LIST
-                menu?.findItem(R.id.notesGridAction)?.isVisible = value != NotesAdapter.ViewType.GRID
+                menu?.findItem(R.id.notesListAction)?.isVisible = value != ViewType.LIST
+                menu?.findItem(R.id.notesGridAction)?.isVisible = value != ViewType.GRID
             }
         }
 
@@ -67,6 +70,7 @@ class NotesViewHolder(
     var onNoteClick: Consumer<Note>? = null
     var onCreateClick: Action? = null
     var onRemoveClick: Consumer<List<Note>>? = null
+    var onViewTypeChange: Consumer<ViewType>? = null
 
     init {
         with(rootViewGroup.notesBottomAppBar) {
@@ -95,8 +99,8 @@ class NotesViewHolder(
         rootViewGroup.notesCreateFloatingActionButton.setOnClickListener { onCreateClick?.invoke() }
         rootViewGroup.notesBottomAppBar.setOnMenuItemClickListener { menuItem ->
             viewType = when (menuItem.itemId) {
-                R.id.notesListAction -> NotesAdapter.ViewType.LIST
-                R.id.notesGridAction -> NotesAdapter.ViewType.GRID
+                R.id.notesListAction -> ViewType.LIST
+                R.id.notesGridAction -> ViewType.GRID
                 else -> return@setOnMenuItemClickListener false
             }
             return@setOnMenuItemClickListener true
@@ -143,16 +147,16 @@ class NotesViewHolder(
     }
 
     /**
-     * Возвращает [RecyclerView.LayoutManager] в зависимости от [NotesAdapter.ViewType].
+     * Возвращает [RecyclerView.LayoutManager] в зависимости от [ViewType].
      *
      * @param context Контекст текущего представления.
      *
-     * @receiver [NotesAdapter.ViewType]
+     * @receiver [ViewType]
      */
-    private fun NotesAdapter.ViewType.layoutManager(context: Context): RecyclerView.LayoutManager {
+    private fun ViewType.layoutManager(context: Context): RecyclerView.LayoutManager {
         return when (this) {
-            NotesAdapter.ViewType.LIST -> LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            NotesAdapter.ViewType.GRID -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            ViewType.LIST -> LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            ViewType.GRID -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
     }
 
