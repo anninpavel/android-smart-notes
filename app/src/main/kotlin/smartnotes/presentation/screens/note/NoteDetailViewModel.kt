@@ -16,8 +16,10 @@ import javax.inject.Inject
  *
  * @property disposables Контейнер подписок.
  * @property _liveCreateOrUpdateNote Содержит результат операции создание/обновления заметки.
+ * @property _liveDeleteNote Содержит результат операции удаления заметки.
  *
  * @property liveCreateOrUpdateNote Предоставляет публичный интерфейс [_liveCreateOrUpdateNote].
+ * @property liveDeleteNote Предоставляет публичный интерфейс [_liveDeleteNote].
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -27,9 +29,13 @@ class NoteDetailViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
     private var _liveCreateOrUpdateNote = MutableLiveData<Response<Unit>>()
+    private var _liveDeleteNote = MutableLiveData<Response<Unit>>()
 
     val liveCreateOrUpdateNote: LiveData<Response<Unit>>
         get() = _liveCreateOrUpdateNote
+
+    val liveDeleteNote: LiveData<Response<Unit>>
+        get() = _liveDeleteNote
 
     override fun onCleared() {
         super.onCleared()
@@ -78,6 +84,22 @@ class NoteDetailViewModel @Inject constructor(
             .subscribe(
                 { _liveCreateOrUpdateNote.value = Response.success(value = Unit) },
                 { _liveCreateOrUpdateNote.value = Response.failure(error = it) }
+            )
+            .addTo(disposables)
+    }
+
+    /**
+     * Удаляет заметку.
+     * Результат оперции передается [_liveDeleteNote].
+     *
+     * @param value Экземпляр удаляемой заметки.
+     */
+    fun delete(value: Note) {
+        notes.delete(value)
+            .doOnSubscribe { _liveDeleteNote.value = Response.loading() }
+            .subscribe(
+                { _liveDeleteNote.value = Response.success(value = Unit) },
+                { _liveDeleteNote.value = Response.failure(error = it) }
             )
             .addTo(disposables)
     }

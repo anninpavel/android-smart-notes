@@ -2,6 +2,7 @@ package smartnotes.presentation.screens.note
 
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_note_detail.view.*
+import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
 import smartnotes.utils.kotlin.Action
 
@@ -40,10 +41,22 @@ class NoteDetailViewHolder(private val rootViewGroup: ViewGroup) {
         }
 
     var onBackClick: Action? = null
+    var onRemoveClick: Action? = null
 
     init {
-        with(rootViewGroup) {
-            noteDetailToolbar.setNavigationOnClickListener { onBackClick?.invoke() }
+        rootViewGroup.noteDetailToolbar.setNavigationOnClickListener { onBackClick?.invoke() }
+
+        with(rootViewGroup.noteDetailBottomAppBar) {
+            menu?.clear()
+            inflateMenu(R.menu.note_detail_bottom)
+        }
+
+        rootViewGroup.noteDetailBottomAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.noteDetailRemoveAction -> onRemoveClick?.invoke()
+                else -> return@setOnMenuItemClickListener false
+            }
+            return@setOnMenuItemClickListener true
         }
     }
 

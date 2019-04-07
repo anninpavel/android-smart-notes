@@ -8,19 +8,21 @@ import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
 import smartnotes.presentation.screens.notes.NotesAdapter.ViewType.GRID
 import smartnotes.presentation.screens.notes.NotesAdapter.ViewType.LIST
-import smartnotes.utils.kotlin.Consumer
+import smartnotes.presentation.share.widgets.recyclerview.selection.SelectionItemKeyProvider
+import smartnotes.utils.kotlin.Predicate
 
 /**
  * Адаптер списка заметок.
  *
  * @property viewType Тип представления списка.
- * @property onItemClick Событие, выбррана заметка.
+ * @property isSelectedPredicate Событие, возвращает выбранное состояние, для передаваемого элемента.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-class NotesAdapter(var viewType: ViewType) : ListAdapter<Note, ItemNotesViewHolder>(DIFF_CALLBACK) {
-
-    var onItemClick: Consumer<Note>? = null
+class NotesAdapter(
+    var viewType: ViewType,
+    var isSelectedPredicate: Predicate<Note> = { false }
+) : ListAdapter<Note, ItemNotesViewHolder>(DIFF_CALLBACK), SelectionItemKeyProvider<Note> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTypeIndex: Int): ItemNotesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,7 +37,7 @@ class NotesAdapter(var viewType: ViewType) : ListAdapter<Note, ItemNotesViewHold
     override fun onBindViewHolder(holder: ItemNotesViewHolder, position: Int) {
         getItem(position)?.let { item ->
             with(holder) {
-                onClick = { onItemClick?.invoke(item) }
+                isChecked = isSelectedPredicate(item)
                 onBind(item)
             }
         }
@@ -45,10 +47,18 @@ class NotesAdapter(var viewType: ViewType) : ListAdapter<Note, ItemNotesViewHold
         return viewType.ordinal
     }
 
+    override fun getKey(position: Int): Note? {
+        return getItem(position)
+    }
+
+    override fun getPosition(key: Note): Int {
+        return currentList.indexOf(key)
+    }
+
     /**
      * Тип представления списка.
      *  - [LIST] Отображеине в виде списка;
-     *  - [GRID] Отображеине в виде таблицы;
+     *  - [GRID] Отображеине в виде таблицы.
      */
     enum class ViewType { LIST, GRID }
 

@@ -38,4 +38,11 @@ interface NoteUseCase {
      * @param value Удаляемая заметка.
      */
     fun delete(value: Note): Completable
+
+    /**
+     * Удаляет коллекцию "Заметок".
+     *
+     * @param values Коллекция удаляемых заметок.
+     */
+    fun delete(values: List<Note>): Completable
 }

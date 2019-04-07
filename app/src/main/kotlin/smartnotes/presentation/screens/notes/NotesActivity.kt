@@ -50,6 +50,7 @@ class NotesActivity : AppCompatActivity() {
         viewHolder = NotesViewHolder(notesMainContainer) { NotesAdapter.ViewType.LIST }.apply {
             onNoteClick = { router.navigateTo(Screens.EditNote(value = it)) }
             onCreateClick = { router.navigateTo(Screens.CreateNote()) }
+            onRemoveClick = { viewModel.delete(values = it) }
         }
 
         viewModel.observeNotes()

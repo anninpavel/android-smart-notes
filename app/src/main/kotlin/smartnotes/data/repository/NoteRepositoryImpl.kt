@@ -38,4 +38,11 @@ class NoteRepositoryImpl(
     override fun delete(value: Note): Completable {
         return Completable.fromAction { db.noteDao().delete(element = mapper.from(value)) }
     }
+
+    override fun delete(values: List<Note>): Completable {
+        return Completable.fromAction {
+            val elements = values.map { mapper.from(value = it) }.toList()
+            db.noteDao().deleteAll(elements)
+        }
+    }
 }

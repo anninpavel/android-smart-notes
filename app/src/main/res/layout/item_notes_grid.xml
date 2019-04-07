@@ -11,21 +11,26 @@
         android:id="@+id/itemNotesCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        app:contentPadding="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/itemNotesContentContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card_view_border_selector"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/itemNotesTitleTextView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="@style/AppTheme.TextAppearance.Subtitle1"
                 android:textColor="@color/text_primary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Lorem ipsum dolor sit amet" />
 

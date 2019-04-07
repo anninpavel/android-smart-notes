@@ -41,4 +41,10 @@ class NoteUseCaseImpl(
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.ui)
     }
+
+    override fun delete(values: List<Note>): Completable {
+        return notes.delete(values)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui)
+    }
 }

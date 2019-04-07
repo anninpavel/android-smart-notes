@@ -35,10 +35,18 @@ interface NoteRepository {
     fun edit(value: Note): Completable
 
     /**
-     * Удаляет "Заметку."
+     * Удаляет "Заметку".
      * Операция должна выполняться в побочном потоке.
      *
      * @param value Удаляемая заметка.
      */
     fun delete(value: Note): Completable
+
+    /**
+     * Удаляет коллекцию "Заметок".
+     * Операция должна выполняться в побочном потоке.
+     *
+     * @param values Коллекция удаляемых заметок.
+     */
+    fun delete(values: List<Note>): Completable
 }

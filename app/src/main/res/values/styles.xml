@@ -16,9 +16,13 @@
         <item name="android:background">@color/primary_dark</item>
     </style>
 
+    <style name="AppTheme.ActionMode" parent="Base.Widget.AppCompat.ActionMode">
+        <item name="background">@color/primary</item>
+    </style>
+
     <style name="AppTheme.CardView">
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:background">@color/white</item>
         <item name="cardCornerRadius">8dp</item>
         <item name="cardElevation">2dp</item>
         <item name="cardPreventCornerOverlap">false</item>
@@ -39,10 +43,6 @@
     <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/accent</item>
         <item name="hintTextColor">@color/accent</item>
-    </style>
-
-    <style name="Asd">
-        <item name="colorPrimary">@color/accent</item>
     </style>
 
     <style name="AppTheme.TextAppearance" />

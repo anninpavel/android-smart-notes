@@ -62,6 +62,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
         viewHolder = NoteDetailViewHolder(rootViewGroup = noteDetailMainContainer).apply {
             onBackClick = { startupMode.makeSave() }
+            onRemoveClick = { startupMode.makeRemove() }
 
             val data = startupMode.let { mode ->
                 return@let when (mode) {
@@ -92,6 +93,7 @@ class NoteDetailActivity : AppCompatActivity() {
             }
         }
         liveCreateOrUpdateNote.observe(this@NoteDetailActivity, observer)
+        liveDeleteNote.observe(this@NoteDetailActivity, observer)
     }
 
     /** Сохраняет заметку. */
@@ -99,6 +101,14 @@ class NoteDetailActivity : AppCompatActivity() {
         when (this) {
             is Mode.Create -> viewModel.create(title, text)
             is Mode.Edit -> viewModel.save(value, title, text)
+        }
+    }
+
+    /** Удаляет заметку. */
+    private fun Mode.makeRemove() {
+        when (this) {
+            is Mode.Create -> router.exit()
+            is Mode.Edit -> viewModel.delete(value)
         }
     }
 

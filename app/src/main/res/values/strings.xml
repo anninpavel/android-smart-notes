@@ -4,6 +4,7 @@
     <!-- Global's -->
     <string name="app_name">Smart Notes</string>
     <string name="label_error_unknown">Неизвестная ошибка</string>
+    <string name="action_remove">Удалить</string>
 
     <!-- Notes Screen -->
     <string name="notes_title">@string/app_name</string>
@@ -12,9 +13,11 @@
     <string name="notes_label_empty_subtitle">Нажмите "+", чтобы создать заметку</string>
     <string name="notes_action_list_view">Один столбец</string>
     <string name="notes_action_grid_view">Несколько столбцов</string>
+    <string name="notes_action_remove">@string/action_remove</string>
 
     <!-- Note Detail Screen -->
     <string name="note_detail_hint_title">Название</string>
     <string name="note_detail_hint_text">Текст</string>
+    <string name="note_detail_action_remove">@string/action_remove</string>
 
 </resources>
