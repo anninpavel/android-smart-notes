@@ -1,5 +1,6 @@
 package smartnotes.presentation.usecase
 
+import androidx.documentfile.provider.DocumentFile
 import smartnotes.domain.values.ViewType
 
 /**
@@ -18,4 +19,11 @@ interface UserUseCase {
      * @param value Сохраняемый тип отоюражения списков.
      */
     fun saveViewType(value: ViewType)
+
+    /**
+     * Возвращает директорию для экспорта данных.
+     *
+     * @param desiredDirectory Желаемый каталог для экспорта (опционально).
+     */
+    fun exportDirectory(desiredDirectory: DocumentFile? = null): DocumentFile
 }

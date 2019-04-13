@@ -1,5 +1,6 @@
 package smartnotes.presentation.usecase
 
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import io.reactivex.Completable
 import smartnotes.domain.models.Note
@@ -45,4 +46,12 @@ interface NoteUseCase {
      * @param values Коллекция удаляемых заметок.
      */
     fun delete(values: List<Note>): Completable
+
+    /**
+     * Экспортирует заметку в текстовый файл.
+     *
+     * @param value Экспортируемая заметка.
+     * @param outputDirectory Директория в которую будет сохранен экспортируемый файл.
+     */
+    fun exportToFile(value: Note, outputDirectory: DocumentFile): Completable
 }

@@ -1,5 +1,6 @@
 package smartnotes.presentation.screens.note
 
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import io.reactivex.rxkotlin.addTo
 import smartnotes.domain.models.Note
 import smartnotes.presentation.common.Response
 import smartnotes.presentation.usecase.NoteUseCase
+import smartnotes.presentation.usecase.UserUseCase
 import java.util.*
 import javax.inject.Inject
 
@@ -17,25 +19,32 @@ import javax.inject.Inject
  * @property disposables Контейнер подписок.
  * @property _liveCreateOrUpdateNote Содержит результат операции создание/обновления заметки.
  * @property _liveDeleteNote Содержит результат операции удаления заметки.
+ * @property _liveExportToFile Содержит результат операции експорта заметки в файл.
  *
  * @property liveCreateOrUpdateNote Предоставляет публичный интерфейс [_liveCreateOrUpdateNote].
  * @property liveDeleteNote Предоставляет публичный интерфейс [_liveDeleteNote].
+ * @property liveExportToFile Предоставляет публичный интерфейс [_liveExportToFile].
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
 class NoteDetailViewModel @Inject constructor(
-    private val notes: NoteUseCase
+    private val notes: NoteUseCase,
+    private val userUseCase: UserUseCase
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
-    private var _liveCreateOrUpdateNote = MutableLiveData<Response<Unit>>()
-    private var _liveDeleteNote = MutableLiveData<Response<Unit>>()
+    private val _liveCreateOrUpdateNote = MutableLiveData<Response<Unit>>()
+    private val _liveDeleteNote = MutableLiveData<Response<Unit>>()
+    private val _liveExportToFile = MutableLiveData<Response<Unit>>()
 
     val liveCreateOrUpdateNote: LiveData<Response<Unit>>
         get() = _liveCreateOrUpdateNote
 
     val liveDeleteNote: LiveData<Response<Unit>>
         get() = _liveDeleteNote
+
+    val liveExportToFile: LiveData<Response<Unit>>
+        get() = _liveExportToFile
 
     override fun onCleared() {
         super.onCleared()
@@ -62,8 +71,7 @@ class NoteDetailViewModel @Inject constructor(
             .subscribe(
                 { _liveCreateOrUpdateNote.value = Response.success(value = Unit) },
                 { _liveCreateOrUpdateNote.value = Response.failure(error = it) }
-            )
-            .addTo(disposables)
+            ).addTo(disposables)
     }
 
     /**
@@ -84,8 +92,7 @@ class NoteDetailViewModel @Inject constructor(
             .subscribe(
                 { _liveCreateOrUpdateNote.value = Response.success(value = Unit) },
                 { _liveCreateOrUpdateNote.value = Response.failure(error = it) }
-            )
-            .addTo(disposables)
+            ).addTo(disposables)
     }
 
     /**
@@ -100,7 +107,31 @@ class NoteDetailViewModel @Inject constructor(
             .subscribe(
                 { _liveDeleteNote.value = Response.success(value = Unit) },
                 { _liveDeleteNote.value = Response.failure(error = it) }
-            )
-            .addTo(disposables)
+            ).addTo(disposables)
+    }
+
+    /**
+     * Экспортирует заметку в файл.
+     * Результат оперции передается [_liveExportToFile].
+     *
+     * @param title Заголовк заметки.
+     * @param text Текст заметки.
+     * @param desiredDirectory Желаемая директория для экспорта (опционально).
+     */
+    fun exportToFile(title: CharSequence?, text: CharSequence?, desiredDirectory: DocumentFile? = null) {
+        val note = Note(
+            _id = UUID.randomUUID(),
+            title = title?.toString() ?: "",
+            text = text?.toString() ?: "",
+            created = Date()
+        )
+
+        val outputDirectory = userUseCase.exportDirectory(desiredDirectory)
+        notes.exportToFile(note, outputDirectory)
+            .doOnSubscribe { _liveExportToFile.value = Response.loading() }
+            .subscribe(
+                { _liveExportToFile.value = Response.success(value = Unit) },
+                { _liveExportToFile.value = Response.failure(error = it) }
+            ).addTo(disposables)
     }
 }

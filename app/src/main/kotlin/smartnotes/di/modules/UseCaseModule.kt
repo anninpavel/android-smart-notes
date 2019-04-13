@@ -5,6 +5,7 @@ package smartnotes.di.modules
 import dagger.Module
 import dagger.Provides
 import smartnotes.data.cache.PreferenceSource
+import smartnotes.data.files.FileExplorer
 import smartnotes.domain.repository.NoteRepository
 import smartnotes.domain.usecase.NoteUseCaseImpl
 import smartnotes.domain.usecase.UserUseCaseImpl
@@ -19,13 +20,13 @@ class UseCaseModule {
 
     @Singleton
     @Provides
-    fun provideNoteUseCase(notes: NoteRepository, schedulers: SchedulerFacade): NoteUseCase {
-        return NoteUseCaseImpl(notes, schedulers)
+    fun provideNoteUseCase(notes: NoteRepository, files: FileExplorer, schedulers: SchedulerFacade): NoteUseCase {
+        return NoteUseCaseImpl(notes, files, schedulers)
     }
 
     @Singleton
     @Provides
-    fun provideUserUseCase(preference: PreferenceSource): UserUseCase {
-        return UserUseCaseImpl(preference)
+    fun provideUserUseCase(preference: PreferenceSource, files: FileExplorer): UserUseCase {
+        return UserUseCaseImpl(preference, files)
     }
 }

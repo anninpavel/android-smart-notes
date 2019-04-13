@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import smartnotes.SmartNotesApplication
 import smartnotes.data.cache.PreferenceSource
+import smartnotes.data.files.FileExplorer
 import smartnotes.utils.rx.SchedulerFacade
 import javax.inject.Singleton
 
@@ -32,6 +33,11 @@ class ApplicationModule {
     @Singleton
     fun providePreferenceSource(context: Context): PreferenceSource {
         return PreferenceSource(context)
+    }
+
+    @Provides
+    fun provideFileExplorer(context: Context): FileExplorer {
+        return FileExplorer(context)
     }
 
     @Provides
