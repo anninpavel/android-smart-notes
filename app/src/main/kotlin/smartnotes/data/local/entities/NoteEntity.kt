@@ -10,6 +10,7 @@ import java.util.*
  * @property id Идентификатор заметки.
  * @property title Заголовок заметки.
  * @property text Текст заметки.
+ * @property priority Приортитет заметки.
  * @property created Дата создания заметки.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
@@ -22,5 +23,6 @@ data class NoteEntity(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "text") val text: String,
+    @ColumnInfo(name = "priority") val priority: String,
     @ColumnInfo(name = "created") val created: Date
 )

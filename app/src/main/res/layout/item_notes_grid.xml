@@ -21,6 +21,20 @@
             android:background="@drawable/bg_card_view_border_selector"
             android:padding="16dp">
 
+            <ImageView
+                android:id="@+id/itemNotesPriorityIndicatorImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="8dp"
+                android:src="@drawable/ic_note_priority_indicator_white_8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/itemNotesTitleTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/itemNotesTitleTextView"
+                tools:ignore="ContentDescription,RtlSymmetry"
+                tools:tint="@color/amber"
+                tools:visibility="visible" />
+
             <TextView
                 android:id="@+id/itemNotesTitleTextView"
                 android:layout_width="0dp"
@@ -30,7 +44,7 @@
                 android:textAppearance="@style/AppTheme.TextAppearance.Subtitle1"
                 android:textColor="@color/text_primary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/itemNotesPriorityIndicatorImageView"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Lorem ipsum dolor sit amet" />
 

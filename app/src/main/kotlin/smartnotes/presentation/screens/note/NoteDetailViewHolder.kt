@@ -10,12 +10,11 @@ import smartnotes.utils.kotlin.Action
  * Представление экрана "Создание и редактирование заметки".
  *
  * @property isLocked Флаг определяющий доступность взаимодействия с представлением.
- * @property title Заголовок заметки, отображаемое на представлении.
- * @property text Текст заметки, отображаемый на представлении.
-
+ * @property title Заголовок заметки отображаемое на представлении.
+ * @property text Текст заметки отображаемый на представлении.
+ *
  * @property onBackClick Событие, выбрано возвращение на предыдущий экран.
- * @property onExportClick Событие, выбрано экспортирование заметки.
- * @property onRemoveClick Событие, выбрано удаление заметки.
+ * @property onMenuClick Событие, выбрано меню заметки.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -44,8 +43,7 @@ class NoteDetailViewHolder(private val rootViewGroup: ViewGroup) {
         }
 
     var onBackClick: Action? = null
-    var onExportClick: Action? = null
-    var onRemoveClick: Action? = null
+    var onMenuClick: Action? = null
 
     init {
         rootViewGroup.noteDetailToolbar.setNavigationOnClickListener { onBackClick?.invoke() }
@@ -57,8 +55,7 @@ class NoteDetailViewHolder(private val rootViewGroup: ViewGroup) {
 
         rootViewGroup.noteDetailBottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.noteDetailExportAction -> onExportClick?.invoke()
-                R.id.noteDetailRemoveAction -> onRemoveClick?.invoke()
+                R.id.noteDetailMoreAction -> onMenuClick?.invoke()
                 else -> return@setOnMenuItemClickListener false
             }
             return@setOnMenuItemClickListener true

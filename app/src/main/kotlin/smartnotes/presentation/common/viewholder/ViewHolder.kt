@@ -38,12 +38,12 @@ open class ViewHolder(
         errorLayout = view.statesFactoryErrorStateView
     )
 
-    var state by Delegates.observable<State>(State.Content) { _, _, newValue: State ->
+    var state by Delegates.observable<State>(Content) { _, _, newValue: State ->
         applyState(newValue)
     }
 
     init {
-        state = State.Content
+        state = Content
     }
 
     /**
@@ -79,10 +79,10 @@ open class ViewHolder(
      */
     private fun applyState(state: State) {
         val (progressVisible, emptyVisible, errorVisible) = when (state) {
-            State.Content -> Triple(first = false, second = false, third = false)
-            State.Progress -> Triple(first = true, second = false, third = false)
-            State.Empty -> Triple(first = false, second = true, third = false)
-            is State.Error -> {
+            Content -> Triple(first = false, second = false, third = false)
+            Progress -> Triple(first = true, second = false, third = false)
+            Empty -> Triple(first = false, second = true, third = false)
+            is Error -> {
                 setErrorContent(
                     title = resources.getString(R.string.label_error_unknown),
                     subTitle = state.error.localizedMessage

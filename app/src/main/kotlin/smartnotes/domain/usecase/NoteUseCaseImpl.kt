@@ -27,14 +27,10 @@ class NoteUseCaseImpl(
         return notes.liveFetchAll()
     }
 
-    override fun create(value: Note): Completable {
-        return notes.create(value)
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.ui)
-    }
-
-    override fun edit(value: Note): Completable {
-        return notes.edit(value)
+    override fun save(value: Note): Completable {
+        return notes.findById(value.id)
+            .isEmpty
+            .flatMapCompletable { isEmpty -> if (isEmpty) notes.create(value) else notes.edit(value) }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.ui)
     }

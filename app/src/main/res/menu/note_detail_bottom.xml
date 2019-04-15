@@ -4,15 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/noteDetailExportAction"
-        android:title="@string/note_detail_action_export"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/noteDetailRemoveAction"
-        android:icon="@drawable/ic_delete_white_24dp"
-        android:title="@string/note_detail_action_remove"
-        app:iconTint="@color/accent"
-        app:showAsAction="never" />
+        android:id="@+id/noteDetailMoreAction"
+        android:icon="@drawable/ic_more_white_24dp"
+        android:title="@string/note_detail_action_menu"
+        app:iconTint="@color/primary"
+        app:showAsAction="ifRoom" />
 
 </menu>

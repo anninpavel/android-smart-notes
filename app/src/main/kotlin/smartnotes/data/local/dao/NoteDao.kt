@@ -14,10 +14,18 @@ import smartnotes.data.local.entities.NoteEntity
 interface NoteDao : BaseDao<NoteEntity> {
 
     /**
-     * Запрашивает все данные.Данные отсортированны по убыванию даты создания.
+     * Запрашивает все данные. Данные отсортированны по убыванию даты создания.
      *
      * @return Коллекцию заметок обернутых в держатель данных [LiveData].
      */
     @Query(value = "SELECT * from notes ORDER BY created DESC")
     fun liveAllOrderByCreatedDesc(): LiveData<List<NoteEntity>>
+
+    /**
+     * Возвращает экземпляр зметки по идентификатору, если заметка отсутствует то `null`.
+     *
+     * @param value Идентификатор заметки.
+     */
+    @Query(value = "SELECT * from notes WHERE id == :value")
+    fun byId(value: String): NoteEntity?
 }

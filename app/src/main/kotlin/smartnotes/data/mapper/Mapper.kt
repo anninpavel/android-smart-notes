@@ -8,7 +8,7 @@ package smartnotes.data.mapper
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-interface BaseMapper<IN, OUT> {
+interface Mapper<IN, OUT> {
 
     /** Конвертирует из [IN] в [OUT]. */
     fun from(value: IN): OUT

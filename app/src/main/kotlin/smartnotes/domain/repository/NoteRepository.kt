@@ -2,7 +2,9 @@ package smartnotes.domain.repository
 
 import androidx.lifecycle.LiveData
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import smartnotes.domain.models.Note
+import smartnotes.domain.models.NoteId
 
 /**
  * Интерфейс репоизитория данных "Заметок".
@@ -17,6 +19,14 @@ interface NoteRepository {
      * @return Коллекцию заметок обернутых в держатель данных [LiveData].
      */
     fun liveFetchAll(): LiveData<List<Note>>
+
+    /**
+     * Возвращает "Заметку" по идентификатору.
+     * Операция должна выполняться в побочном потоке.
+     *
+     * @param value Идентификатор заметки.
+     */
+    fun findById(value: NoteId): Maybe<Note>
 
     /**
      * Создает новую "Заметку".

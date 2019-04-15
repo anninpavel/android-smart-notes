@@ -21,6 +21,7 @@ import smartnotes.presentation.common.Response
 import smartnotes.presentation.navigation.observe
 import smartnotes.presentation.screens.note.NoteDetailActivity.Mode.Create
 import smartnotes.presentation.screens.note.NoteDetailActivity.Mode.Edit
+import smartnotes.presentation.screens.note.dialogs.menu.NoteDetailMenuDialog
 import smartnotes.utils.android.activityResultManager
 import smartnotes.utils.android.permissionManager
 import smartnotes.utils.extensions.NO_RESOURCE
@@ -73,22 +74,16 @@ class NoteDetailActivity : AppCompatActivity() {
         viewModel = injectViewModel(viewModelFactory)
         navigatorHolder.observe(this, navigator)
 
-        viewHolder = NoteDetailViewHolder(rootViewGroup = noteDetailMainContainer).apply {
-            onBackClick = { startupMode.makeSave() }
-            onRemoveClick = { startupMode.makeRemove() }
-            onExportClick = { makeExport() }
+        savedInstanceState ?: (startupMode as? Edit)?.let { viewModel.editNote(value = it.value) }
 
-            val data = startupMode.let { mode ->
-                return@let when (mode) {
-                    is Create -> null
-                    is Edit -> mode.value
-                }
-            }
-            onBind(data)
+        viewHolder = NoteDetailViewHolder(rootViewGroup = noteDetailMainContainer).apply {
+            onBackClick = { onBackPressed() }
+            onMenuClick = { openMenu() }
+            onBind(viewModel.note)
         }
 
         with(viewModel) {
-            observeNote()
+            observeSaveAndDeleteNote()
             observeExportNote()
         }
     }
@@ -105,7 +100,11 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        startupMode.makeSave()
+        with(viewModel) {
+            editTitle(viewHolder.title)
+            editText(viewHolder.text)
+            save()
+        }
     }
 
     /** Открывает экран выбора директории. */
@@ -125,8 +124,8 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
-    /** Подписывает наблюдателей к текущей заметке. */
-    private fun NoteDetailViewModel.observeNote() {
+    /** Подписывает наблюдателей к сохранению и удалению заметки. */
+    private fun NoteDetailViewModel.observeSaveAndDeleteNote() {
         val observer = Observer<Response<Unit>> { response ->
             when (response) {
                 is Response.Progress -> viewHolder.isLocked = true
@@ -137,7 +136,7 @@ class NoteDetailActivity : AppCompatActivity() {
                 }
             }
         }
-        liveCreateOrUpdateNote.observe(this@NoteDetailActivity, observer)
+        liveSaveNote.observe(this@NoteDetailActivity, observer)
         liveDeleteNote.observe(this@NoteDetailActivity, observer)
     }
 
@@ -160,11 +159,14 @@ class NoteDetailActivity : AppCompatActivity() {
         liveExportToFile.observe(this@NoteDetailActivity, observer)
     }
 
-    /** Сохраняет заметку. */
-    private fun Mode.makeSave(title: CharSequence? = viewHolder.title, text: CharSequence? = viewHolder.text) {
-        when (this) {
-            is Create -> viewModel.create(title, text)
-            is Edit -> viewModel.save(value, title, text)
+    /** Открывает меню. */
+    private fun openMenu(note: Note = viewModel.note) {
+        val dialog = supportFragmentManager.findFragmentByTag(NoteDetailMenuDialog.TAG) as? NoteDetailMenuDialog
+            ?: NoteDetailMenuDialog.newInstance(note).apply { show(supportFragmentManager, NoteDetailMenuDialog.TAG) }
+        with(dialog) {
+            onExport = { makeExport() }
+            onRemove = { startupMode.makeRemove() }
+            onPriorityChange = { viewModel.editPriority(value = it) }
         }
     }
 
@@ -172,17 +174,17 @@ class NoteDetailActivity : AppCompatActivity() {
     private fun Mode.makeRemove() {
         when (this) {
             is Create -> router.exit()
-            is Edit -> viewModel.delete(value)
+            is Edit -> viewModel.delete()
         }
     }
 
     /** Сохраняет заметку. */
-    private fun makeExport(title: CharSequence? = viewHolder.title, text: CharSequence? = viewHolder.text) {
+    private fun makeExport() {
         permissions.requestThenRun(
             permissions = listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             onAccepted = {
                 openSelectDirectory { outputFile ->
-                    viewModel.exportToFile(title, text, outputFile?.documentFile(this@NoteDetailActivity))
+                    viewModel.exportToFile(outputFile?.documentFile(this@NoteDetailActivity))
                 }
             },
             onDenied = { toast(R.string.note_detail_error_export_no_permission) }

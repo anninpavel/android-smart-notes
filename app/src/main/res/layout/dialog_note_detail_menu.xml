@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogNoteDetailMenuMainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/dialogNoteDetailMenuNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/note_detail_menu" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dialogNoteDetailMenuPriorityRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="true"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_note_detail_menu_priority" />
+
+</LinearLayout>

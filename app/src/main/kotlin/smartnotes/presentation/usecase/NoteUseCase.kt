@@ -20,18 +20,11 @@ interface NoteUseCase {
     fun liveFetchAll(): LiveData<List<Note>>
 
     /**
-     * Создает новую "Заметку".
+     * Сохраняет "Заметку".
      *
-     * @param value Новая заметка.
+     * @param value Сохраняемая заметка.
      */
-    fun create(value: Note): Completable
-
-    /**
-     * Редактирует "Заметку".
-     *
-     * @param value Редактируемая заметка.
-     */
-    fun edit(value: Note): Completable
+    fun save(value: Note): Completable
 
     /**
      * Удаляет "Заметку".

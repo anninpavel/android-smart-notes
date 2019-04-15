@@ -17,4 +17,7 @@
     <color name="black_alpha_33">#54000000</color>
     <color name="athens_gray">#F4F4F5</color>
     <color name="pickled_bluewood">#35525B</color>
+    <color name="pomegranate">#f44336</color>
+    <color name="amber">#ffc107</color>
+    <color name="fruit_salad">#4caf50</color>
 </resources>
