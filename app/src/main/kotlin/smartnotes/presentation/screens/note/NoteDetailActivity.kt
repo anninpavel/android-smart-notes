@@ -9,6 +9,7 @@ import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_note_detail.*
 import ru.github.anninpavel.smartnotes.R
@@ -25,6 +26,7 @@ import smartnotes.presentation.screens.note.dialogs.menu.NoteDetailMenuDialog
 import smartnotes.utils.android.activityResultManager
 import smartnotes.utils.android.permissionManager
 import smartnotes.utils.extensions.NO_RESOURCE
+import smartnotes.utils.extensions.debounce
 import smartnotes.utils.extensions.documentFile
 import smartnotes.utils.extensions.injectViewModel
 import smartnotes.utils.extensions.intentFor
@@ -60,6 +62,7 @@ class NoteDetailActivity : AppCompatActivity() {
     private var viewHolder by Delegates.notNull<NoteDetailViewHolder>()
     private var viewModel by Delegates.notNull<NoteDetailViewModel>()
     private val navigator = SupportAppNavigator(this, NO_RESOURCE)
+    private val disposables = CompositeDisposable()
     private val permissions by permissionManager()
     private val activityResults by activityResultManager()
     private var startupMode by Delegates.notNull<Mode>()
@@ -79,12 +82,17 @@ class NoteDetailActivity : AppCompatActivity() {
         viewHolder = NoteDetailViewHolder(rootViewGroup = noteDetailMainContainer).apply {
             onBackClick = { onBackPressed() }
             onMenuClick = { openMenu() }
+            onUndoClick = { viewModel.undo() }
+            onTitleChange = { value: CharSequence? -> viewModel.editTitle(value) }.debounce(disposables)
+            onTextChange = { value: CharSequence? -> viewModel.editText(value) }.debounce(disposables)
+
             onBind(viewModel.note)
         }
 
         with(viewModel) {
             observeSaveAndDeleteNote()
             observeExportNote()
+            observeUndoNote()
         }
     }
 
@@ -105,6 +113,11 @@ class NoteDetailActivity : AppCompatActivity() {
             editText(viewHolder.text)
             save()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.clear()
     }
 
     /** Открывает экран выбора директории. */
@@ -157,6 +170,15 @@ class NoteDetailActivity : AppCompatActivity() {
             }
         }
         liveExportToFile.observe(this@NoteDetailActivity, observer)
+    }
+
+    /** Подписывает наблюдателей к отмене действию в заметке. */
+    private fun NoteDetailViewModel.observeUndoNote() {
+        val observer = Observer<Note> { viewHolder.onBind(data = it) }
+        liveUndoNote.observe(this@NoteDetailActivity, observer)
+
+        val hasUndoObserver = Observer<Boolean> { viewHolder.isUndoVisibility = it }
+        liveHasUndoNote.observe(this@NoteDetailActivity, hasUndoObserver)
     }
 
     /** Открывает меню. */

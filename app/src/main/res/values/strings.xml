@@ -20,6 +20,7 @@
     <string name="note_detail_hint_text">Текст</string>
     <string name="note_detail_label_export_success">Заметка успешно экспортирована</string>
     <string name="note_detail_action_menu">Меню</string>
+    <string name="note_detail_action_undo">Отменить</string>
     <string name="note_detail_error_export_no_permission">Упс, отсутствуют разрешения для экспорта заметки</string>
     <string name="note_detail_error_export_select_directory">Упс, не выбрана директория для экспорта заметки</string>
     <string name="note_detail_error_export_unknown">Упс, что-то пошло не так при экспорте заметки</string>

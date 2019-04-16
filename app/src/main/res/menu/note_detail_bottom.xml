@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/noteDetailUndoAction"
+        android:icon="@drawable/ic_undo_white_24dp"
+        android:title="@string/note_detail_action_undo"
+        android:visible="false"
+        app:iconTint="@color/primary"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
 
     <item
         android:id="@+id/noteDetailMoreAction"

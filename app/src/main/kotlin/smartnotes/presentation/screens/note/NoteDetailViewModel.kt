@@ -3,6 +3,7 @@ package smartnotes.presentation.screens.note
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -18,14 +19,18 @@ import javax.inject.Inject
  * ViewModel экрана создания и редактирования заметки.
  *
  * @property disposables Контейнер подписок.
+ * @property _controlHasUndoNote Управляющий наблюдатель для [liveHasUndoNote].
+ * @property _liveUndoNote Содержит результат операции отмены действия.
  * @property _liveSaveNote Содержит результат операции сохранения заметки.
  * @property _liveDeleteNote Содержит результат операции удаления заметки.
  * @property _liveExportToFile Содержит результат операции експорта заметки в файл.
  *
  * @property note Текущее состояние заметки.
+ * @property liveUndoNote Предоставляет публичный интерфейс [_liveUndoNote].
  * @property liveSaveNote Предоставляет публичный интерфейс [_liveSaveNote].
  * @property liveDeleteNote Предоставляет публичный интерфейс [_liveDeleteNote].
  * @property liveExportToFile Предоставляет публичный интерфейс [_liveExportToFile].
+ * @property liveHasUndoNote Содержит результат доступности отмены последнего действия.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -42,12 +47,17 @@ class NoteDetailViewModel(
             : this(notes, userUseCase, editor, MementoCaretaker(editor))
 
     private val disposables = CompositeDisposable()
+    private val _controlHasUndoNote = MutableLiveData<Unit>()
+    private val _liveUndoNote = MutableLiveData<Note>()
     private val _liveSaveNote = MutableLiveData<Response<Unit>>()
     private val _liveDeleteNote = MutableLiveData<Response<Unit>>()
     private val _liveExportToFile = MutableLiveData<Response<Unit>>()
 
     val note: Note
         get() = editor.note
+
+    val liveUndoNote: LiveData<Note>
+        get() = _liveUndoNote
 
     val liveSaveNote: LiveData<Response<Unit>>
         get() = _liveSaveNote
@@ -58,6 +68,8 @@ class NoteDetailViewModel(
     val liveExportToFile: LiveData<Response<Unit>>
         get() = _liveExportToFile
 
+    val liveHasUndoNote = Transformations.map(_controlHasUndoNote) { caretaker.hasUndo() }
+
     override fun onCleared() {
         super.onCleared()
         disposables.dispose()
@@ -65,25 +77,32 @@ class NoteDetailViewModel(
 
     /** Изменяет заголовок заметки. */
     fun editTitle(value: CharSequence?) {
-        editor.title(value = value?.toString() ?: "")
-        caretaker.save()
+        caretaker.snapshot { title(value = value?.toString() ?: "") }
     }
 
     /** Изменяет текст заметки. */
     fun editText(value: CharSequence?) {
-        editor.text(value = value?.toString() ?: "")
-        caretaker.save()
+        caretaker.snapshot { text(value = value?.toString() ?: "") }
     }
 
     /** Изменяет приоритет заметки. */
     fun editPriority(value: NotePriority) {
-        editor.priority(value)
-        caretaker.save()
+        caretaker.snapshot { priority(value) }
     }
 
     /** Изменяет полное состояние заметки. */
     fun editNote(value: Note) {
         editor.note = value
+    }
+
+    /**
+     * Отменяет последнее действие.
+     * Результат оперции передается [_liveUndoNote].
+     */
+    fun undo() {
+        caretaker.undo()
+        _liveUndoNote.value = editor.note
+        _controlHasUndoNote.value = Unit
     }
 
     /**
@@ -126,5 +145,11 @@ class NoteDetailViewModel(
                 { _liveExportToFile.value = Response.success(value = Unit) },
                 { _liveExportToFile.value = Response.failure(error = it) }
             ).addTo(disposables)
+    }
+
+    private fun MementoCaretaker<*>.snapshot(init: NoteEditor.() -> Unit) {
+        save()
+        editor.apply(init)
+        _controlHasUndoNote.value = Unit
     }
 }
