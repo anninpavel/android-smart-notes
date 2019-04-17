@@ -8,7 +8,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import smartnotes.di.common.ViewModelFactory
-import smartnotes.di.common.ViewModelKey
+import ru.github.anninpavel.smartnotes.di.common.ViewModelKey
 import smartnotes.presentation.screens.note.NoteDetailViewModel
 import smartnotes.presentation.screens.notes.NotesViewModel
 
