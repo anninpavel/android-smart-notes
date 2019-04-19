@@ -1,18 +1,22 @@
-package smartnotes.data.mapper
+@file:JvmMultifileClass
+
+package smartnotes.data.converters
 
 import smartnotes.data.local.entities.NoteEntity
+import smartnotes.data.local.views.NoteWithPhotosView
 import smartnotes.domain.models.Note
 import smartnotes.domain.values.NotePriority
 import java.util.*
 
 /**
- * Конвертор типов [Note], [NoteEntity].
+ * Конвертер типов для заметок.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-class NoteMapper : Mapper<Note, NoteEntity> {
+class NoteConverter(private val photoConverter: PhotoConverter) {
 
-    override fun from(value: Note): NoteEntity {
+    /** Возвращает новых экземпляр [NoteEntity], сформированный из [value]. */
+    fun convert(value: Note): NoteEntity {
         return NoteEntity(
             id = value.id.value.toString(),
             title = value.title,
@@ -22,13 +26,22 @@ class NoteMapper : Mapper<Note, NoteEntity> {
         )
     }
 
-    override fun to(value: NoteEntity): Note {
+    /** Возвращает новых экземпляр [Note], сформированный из [value]. */
+    fun convert(value: NoteEntity): Note {
         return Note(
             _id = UUID.fromString(value.id),
             title = value.title,
             text = value.text,
             priority = value.priority.notePriority(),
-            created = value.created
+            created = value.created,
+            photos = emptyList()
+        )
+    }
+
+    /** Возвращает новых экземпляр [Note], сформированный из [value]. */
+    fun convert(value: NoteWithPhotosView): Note {
+        return convert(value.value).copy(
+            photos = value.photos.map { photo -> photoConverter.convert(photo) }
         )
     }
 

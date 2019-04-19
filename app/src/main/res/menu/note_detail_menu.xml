@@ -18,4 +18,11 @@
         app:iconTint="@color/black"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/noteDetailTakePhotoAction"
+        android:icon="@drawable/ic_photo_camera_white_24dp"
+        android:title="@string/note_detail_action_take_photo"
+        app:iconTint="@color/black"
+        app:showAsAction="ifRoom" />
+
 </menu>

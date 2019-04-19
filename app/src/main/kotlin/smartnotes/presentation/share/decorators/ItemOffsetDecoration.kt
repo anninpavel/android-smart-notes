@@ -2,6 +2,7 @@ package smartnotes.presentation.share.decorators
 
 import android.graphics.Rect
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -18,13 +19,25 @@ class ItemOffsetDecoration(
     private val afterOffset: Int = 0
 ) : RecyclerView.ItemDecoration() {
 
+    constructor(offset: Int) : this(beforeOffset = offset, afterOffset = offset)
+
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
 
         val position = parent.getChildAdapterPosition(view)
         when (val layoutManager = parent.layoutManager) {
+            is GridLayoutManager -> layoutManager.itemOffsets(position, outRect)
             is LinearLayoutManager -> layoutManager.itemOffsets(position, outRect)
             else -> throw IllegalArgumentException("Unknown type layout manager: $layoutManager")
+        }
+    }
+
+    private fun GridLayoutManager.itemOffsets(position: Int, outRect: Rect) {
+        val column = position % spanCount
+        outRect.left = column * beforeOffset / spanCount
+        outRect.right = afterOffset - (column + 1) * afterOffset / spanCount
+        if (position >= spanCount) {
+            outRect.top = beforeOffset
         }
     }
 

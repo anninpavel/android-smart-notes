@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
@@ -18,6 +19,7 @@ import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import smartnotes.di.common.ViewModelFactory
 import smartnotes.domain.models.Note
+import smartnotes.domain.models.Photo
 import smartnotes.presentation.common.Response
 import smartnotes.presentation.navigation.observe
 import smartnotes.presentation.screens.note.NoteDetailActivity.Mode.Create
@@ -83,6 +85,8 @@ class NoteDetailActivity : AppCompatActivity() {
             onBackClick = { onBackPressed() }
             onMenuClick = { openMenu() }
             onUndoClick = { viewModel.undo() }
+            onPhotoClick = { photo -> openPhotoViewer(photo) }
+            onPhotoRemoveClick = { photo -> viewModel.removePhoto(photo) }
             onTitleChange = { value: CharSequence? -> viewModel.editTitle(value) }.debounce(disposables)
             onTextChange = { value: CharSequence? -> viewModel.editText(value) }.debounce(disposables)
 
@@ -92,6 +96,7 @@ class NoteDetailActivity : AppCompatActivity() {
         with(viewModel) {
             observeSaveAndDeleteNote()
             observeExportNote()
+            observeChangeNote()
             observeUndoNote()
         }
     }
@@ -123,7 +128,7 @@ class NoteDetailActivity : AppCompatActivity() {
     /** Открывает экран выбора директории. */
     private fun openSelectDirectory(action: Consumer<Uri?>) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        if (intent.isSafe(this)) {
+        if (intent.isSafe(context = this)) {
             activityResults.launch(
                 intent = intent,
                 onAccepted = { data ->
@@ -134,6 +139,68 @@ class NoteDetailActivity : AppCompatActivity() {
             )
         } else {
             action(null)
+        }
+    }
+
+    /** Открывает меню. */
+    private fun openMenu(note: Note = viewModel.note) {
+        val dialog = supportFragmentManager.findFragmentByTag(NoteDetailMenuDialog.TAG) as? NoteDetailMenuDialog
+            ?: NoteDetailMenuDialog.newInstance(note).apply { show(supportFragmentManager, NoteDetailMenuDialog.TAG) }
+        with(dialog) {
+            onExport = { makeExport() }
+            onRemove = { startupMode.makeRemove() }
+            onTakePhoto = { takePhoto() }
+            onPriorityChange = { viewModel.editPriority(value = it) }
+        }
+    }
+
+    /** Открывает просмотр фотографии. */
+    private fun openPhotoViewer(photo: Photo) {
+        val intent = Intent(Intent.ACTION_VIEW, photo.uri).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        if (intent.isSafe(context = this)) {
+            startActivity(Intent.createChooser(intent, getString(R.string.note_detail_label_photo_viewer_title)))
+        } else {
+            toast(R.string.note_detail_error_photo_viewer_no_app)
+        }
+    }
+
+    /** Экспортирует заметку. */
+    private fun makeExport() {
+        permissions.requestThenRun(
+            permissions = listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            onAccepted = {
+                openSelectDirectory { outputFile ->
+                    viewModel.exportToFile(outputFile?.documentFile(this@NoteDetailActivity))
+                }
+            },
+            onDenied = { toast(R.string.note_detail_error_export_no_permission) }
+        )
+    }
+
+    /** Добавляет снимок к заметке. */
+    private fun takePhoto(outputUri: Uri = viewModel.generatePhotoUri()) {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+        }
+        if (intent.isSafe(context = this)) {
+            activityResults.launch(
+                intent = intent,
+                onAccepted = { viewModel.addPhoto(outputUri) },
+                onDenied = { /* Ignore */ }
+            )
+        } else {
+            toast(R.string.note_detail_error_photo_no_app)
+        }
+    }
+
+    /** Удаляет заметку. */
+    private fun Mode.makeRemove() {
+        when (this) {
+            is Create -> router.exit()
+            is Edit -> viewModel.delete()
         }
     }
 
@@ -172,45 +239,16 @@ class NoteDetailActivity : AppCompatActivity() {
         liveExportToFile.observe(this@NoteDetailActivity, observer)
     }
 
+    /** Подписывает наблюдателей к изменению заметки. */
+    private fun NoteDetailViewModel.observeChangeNote() {
+        val observer = Observer<Note> { viewHolder.onBind(data = it) }
+        liveChangeNote.observe(this@NoteDetailActivity, observer)
+    }
+
     /** Подписывает наблюдателей к отмене действию в заметке. */
     private fun NoteDetailViewModel.observeUndoNote() {
-        val observer = Observer<Note> { viewHolder.onBind(data = it) }
-        liveUndoNote.observe(this@NoteDetailActivity, observer)
-
         val hasUndoObserver = Observer<Boolean> { viewHolder.isUndoVisibility = it }
         liveHasUndoNote.observe(this@NoteDetailActivity, hasUndoObserver)
-    }
-
-    /** Открывает меню. */
-    private fun openMenu(note: Note = viewModel.note) {
-        val dialog = supportFragmentManager.findFragmentByTag(NoteDetailMenuDialog.TAG) as? NoteDetailMenuDialog
-            ?: NoteDetailMenuDialog.newInstance(note).apply { show(supportFragmentManager, NoteDetailMenuDialog.TAG) }
-        with(dialog) {
-            onExport = { makeExport() }
-            onRemove = { startupMode.makeRemove() }
-            onPriorityChange = { viewModel.editPriority(value = it) }
-        }
-    }
-
-    /** Удаляет заметку. */
-    private fun Mode.makeRemove() {
-        when (this) {
-            is Create -> router.exit()
-            is Edit -> viewModel.delete()
-        }
-    }
-
-    /** Сохраняет заметку. */
-    private fun makeExport() {
-        permissions.requestThenRun(
-            permissions = listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            onAccepted = {
-                openSelectDirectory { outputFile ->
-                    viewModel.exportToFile(outputFile?.documentFile(this@NoteDetailActivity))
-                }
-            },
-            onDenied = { toast(R.string.note_detail_error_export_no_permission) }
-        )
     }
 
     /**

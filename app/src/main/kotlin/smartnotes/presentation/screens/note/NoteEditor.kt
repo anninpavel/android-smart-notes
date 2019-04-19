@@ -2,9 +2,11 @@
 
 package smartnotes.presentation.screens.note
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import smartnotes.domain.models.Note
+import smartnotes.domain.models.Photo
 import smartnotes.domain.values.NotePriority
 import smartnotes.utils.kotlin.Memento
 import smartnotes.utils.kotlin.MementoOriginator
@@ -32,6 +34,12 @@ interface NoteEditor {
 
     /** Заменяет приоритет заметки. */
     fun priority(value: NotePriority)
+
+    /** Добавляет снимок. */
+    fun addPhoto(value: Uri)
+
+    /** Удаляет снимок. */
+    fun removePhoto(value: Photo)
 }
 
 /**
@@ -60,6 +68,15 @@ class NoteEditorImpl : NoteEditor, MementoOriginator<Note> {
 
     override fun priority(value: NotePriority) {
         note = note.copy(priority = value)
+    }
+
+    override fun addPhoto(value: Uri) {
+        val photo = Photo(path = value.toString())
+        note = note.copy(photos = note.photos.plus(photo))
+    }
+
+    override fun removePhoto(value: Photo) {
+        note = note.copy(photos = note.photos.minus(value))
     }
 
     override fun save(): Memento<Note> {

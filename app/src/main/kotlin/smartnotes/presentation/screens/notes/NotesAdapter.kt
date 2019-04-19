@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
 import smartnotes.domain.values.ViewType
@@ -15,6 +16,7 @@ import smartnotes.utils.kotlin.Predicate
  *
  * @property viewType Тип представления списка.
  * @property isSelectedPredicate Событие, возвращает выбранное состояние, для передаваемого элемента.
+ * @property photoViewPool Контейнер содержащий представления сников, для списка заметок.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -23,6 +25,8 @@ class NotesAdapter(
     var isSelectedPredicate: Predicate<Note> = { false }
 ) : ListAdapter<Note, ItemNotesViewHolder>(DIFF_CALLBACK), SelectionItemKeyProvider<Note> {
 
+    private val photoViewPool = RecyclerView.RecycledViewPool()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewTypeIndex: Int): ItemNotesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val itemView = when (viewTypeIndex.toViewType()) {
@@ -30,7 +34,7 @@ class NotesAdapter(
             ViewType.GRID -> inflater.inflate(R.layout.item_notes_grid, parent, false)
             else -> throw IllegalArgumentException("Unknown view type index $viewTypeIndex")
         }
-        return ItemNotesViewHolder(itemView)
+        return ItemNotesViewHolder(itemView, photoViewPool)
     }
 
     override fun onBindViewHolder(holder: ItemNotesViewHolder, position: Int) {

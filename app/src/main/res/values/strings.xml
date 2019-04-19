@@ -19,14 +19,19 @@
     <string name="note_detail_hint_title">Название</string>
     <string name="note_detail_hint_text">Текст</string>
     <string name="note_detail_label_export_success">Заметка успешно экспортирована</string>
+    <string name="note_detail_label_photo_viewer_title">Просмотр снимка</string>
     <string name="note_detail_action_menu">Меню</string>
     <string name="note_detail_action_undo">Отменить</string>
     <string name="note_detail_error_export_no_permission">Упс, отсутствуют разрешения для экспорта заметки</string>
     <string name="note_detail_error_export_select_directory">Упс, не выбрана директория для экспорта заметки</string>
     <string name="note_detail_error_export_unknown">Упс, что-то пошло не так при экспорте заметки</string>
+    <string name="note_detail_error_photo_no_app">Упс, отсутствует приложение камера</string>
+    <string name="note_detail_error_photo_viewer_no_app">Упс, отсутствует приложение просмотра снимка</string>
+
 
     <!-- Note Detail Menu Dialog-->
     <string name="note_detail_action_remove">@string/action_remove</string>
     <string name="note_detail_action_export">Экспорт</string>
+    <string name="note_detail_action_take_photo">Сделать снимок</string>
 
 </resources>

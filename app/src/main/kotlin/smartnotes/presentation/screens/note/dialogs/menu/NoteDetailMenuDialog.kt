@@ -19,6 +19,7 @@ import kotlin.properties.Delegates
  *
  * @property onExport Событие, выбрано экспортирование заметки.
  * @property onRemove Событие, выбрано удаление заметки.
+ * @property onTakePhoto Событие, выбрано сделать снимок.
  * @property onPriorityChange Событие, выбран приоритет заметки.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
@@ -30,6 +31,7 @@ class NoteDetailMenuDialog : BottomSheetDialogFragment() {
 
     var onExport: Action? = null
     var onRemove: Action? = null
+    var onTakePhoto: Action? = null
     var onPriorityChange: Consumer<NotePriority>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +49,7 @@ class NoteDetailMenuDialog : BottomSheetDialogFragment() {
         viewHolder = NoteDetailMenuViewHolder(rootView = view).apply {
             onExportClick = { onExport?.invoke(); dismiss() }
             onRemoveClick = { onRemove?.invoke(); dismiss() }
+            onTakePhotoClick = { onTakePhoto?.invoke(); dismiss() }
             onPriorityClick = { onPriorityChange?.invoke(it); dismiss() }
             onBind(NotePriority.values().toList(), note.priority)
         }

@@ -16,12 +16,15 @@ import javax.inject.Singleton
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-@Module(includes = [
-    DatabaseModule::class,
-    RepositoryModule::class,
-    UseCaseModule::class,
-    FlavorModule::class
-])
+@Module(
+    includes = [
+        DatabaseModule::class,
+        RepositoryModule::class,
+        UseCaseModule::class,
+        FlavorModule::class,
+        ConverterModule::class
+    ]
+)
 class ApplicationModule {
 
     @Provides

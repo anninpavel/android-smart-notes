@@ -15,6 +15,7 @@ import smartnotes.utils.kotlin.Consumer
  *
  * @property onExportClick Событие, выбрано экспортирование заметки.
  * @property onRemoveClick Событие, выбрано удаление заметки.
+ * @property onTakePhotoClick Событие, ывбрано сделать снимок.
  * @property onPriorityClick Событие, выбран приоритет заметки.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
@@ -25,12 +26,13 @@ class NoteDetailMenuViewHolder(rootView: View) {
 
     var onExportClick: Action? = null
     var onRemoveClick: Action? = null
+    var onTakePhotoClick: Action? = null
     var onPriorityClick: Consumer<NotePriority>? = null
 
     init {
         with(rootView.dialogNoteDetailMenuPriorityRecyclerView) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(ItemOffsetDecoration(beforeOffset = ITEM_OFFSET.px, afterOffset = ITEM_OFFSET.px))
+            addItemDecoration(ItemOffsetDecoration(offset = ITEM_OFFSET.px))
             adapter = priorityAdapter
         }
 
@@ -39,6 +41,7 @@ class NoteDetailMenuViewHolder(rootView: View) {
             when (menuItem.itemId) {
                 R.id.noteDetailExportAction -> onExportClick?.invoke()
                 R.id.noteDetailRemoveAction -> onRemoveClick?.invoke()
+                R.id.noteDetailTakePhotoAction -> onTakePhotoClick?.invoke()
                 else -> return@setNavigationItemSelectedListener false
             }
             return@setNavigationItemSelectedListener true

@@ -13,28 +13,28 @@ import smartnotes.domain.models.Note
 interface NoteUseCase {
 
     /**
-     * Запрашивает все "Заметки".
+     * Запрашивает все заметки.
      *
      * @return Коллекцию заметок обернутых в держатель данных [LiveData].
      */
     fun liveFetchAll(): LiveData<List<Note>>
 
     /**
-     * Сохраняет "Заметку".
+     * Сохраняет заметку.
      *
      * @param value Сохраняемая заметка.
      */
     fun save(value: Note): Completable
 
     /**
-     * Удаляет "Заметку".
+     * Удаляет заметку.
      *
      * @param value Удаляемая заметка.
      */
     fun delete(value: Note): Completable
 
     /**
-     * Удаляет коллекцию "Заметок".
+     * Удаляет коллекцию заметок.
      *
      * @param values Коллекция удаляемых заметок.
      */

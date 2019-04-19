@@ -1,4 +1,4 @@
-package smartnotes.data.local.convertors
+package smartnotes.data.local.converters
 
 import androidx.room.TypeConverter
 import java.util.*

@@ -1,5 +1,6 @@
 package smartnotes.presentation.usecase
 
+import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import smartnotes.domain.values.ViewType
 
@@ -26,4 +27,7 @@ interface UserUseCase {
      * @param desiredDirectory Желаемый каталог для экспорта (опционально).
      */
     fun exportDirectory(desiredDirectory: DocumentFile? = null): DocumentFile
+
+    /** Создает файл для хранения снимка. */
+    fun createFileForPhoto(): Uri
 }

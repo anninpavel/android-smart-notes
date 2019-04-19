@@ -6,14 +6,18 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_notes_grid.view.*
 import ru.github.anninpavel.smartnotes.R
 import smartnotes.domain.models.Note
 import smartnotes.domain.values.NotePriority
 import smartnotes.domain.values.color
 import smartnotes.presentation.common.viewholder.ItemViewHolder
+import smartnotes.presentation.share.decorators.ItemOffsetDecoration
 import smartnotes.presentation.share.widgets.recyclerview.selection.SelectionItemDetail
 import smartnotes.presentation.share.widgets.recyclerview.selection.SelectionItemViewHolder
+import smartnotes.utils.extensions.px
 
 /**
  * Представление элемента списка "Заметок".
@@ -26,9 +30,13 @@ import smartnotes.presentation.share.widgets.recyclerview.selection.SelectionIte
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
-class ItemNotesViewHolder(rootView: View) : ItemViewHolder<Note>(rootView), SelectionItemViewHolder<Note> {
+class ItemNotesViewHolder(
+    rootView: View,
+    photosViewPool: RecyclerView.RecycledViewPool
+) : ItemViewHolder<Note>(rootView), SelectionItemViewHolder<Note> {
 
     private var cacheItemDetail: ItemDetailsLookup.ItemDetails<Note>? = null
+    private val photoAdapter = PhotoNotesAdapter()
 
     private var title: CharSequence?
         get() = itemView.itemNotesTitleTextView.text
@@ -57,10 +65,20 @@ class ItemNotesViewHolder(rootView: View) : ItemViewHolder<Note>(rootView), Sele
             isActivated = value
         }
 
+    init {
+        with(itemView.itemNotesPhotosRecyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            setRecycledViewPool(photosViewPool)
+            addItemDecoration(ItemOffsetDecoration(offset = PHOTOS_ITEM_OFFSET.px))
+            adapter = photoAdapter
+        }
+    }
+
     override fun onBind(data: Note) {
         title = data.title
         text = data.text
         priorityIndicator = data.priority
+        photoAdapter.submitList(data.photos)
 
         cacheItemDetail = SelectionItemDetail(data, adapterPosition)
     }
@@ -72,5 +90,9 @@ class ItemNotesViewHolder(rootView: View) : ItemViewHolder<Note>(rootView), Sele
     /** Возвращает текстовую заглушку для заголовка заметки. */
     private fun Resources.titleStub(): CharSequence {
         return getString(R.string.notes_label_untitled)
+    }
+
+    private companion object {
+        private const val PHOTOS_ITEM_OFFSET = 4
     }
 }

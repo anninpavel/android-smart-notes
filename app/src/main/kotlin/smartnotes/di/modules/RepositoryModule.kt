@@ -4,8 +4,9 @@ package smartnotes.di.modules
 
 import dagger.Module
 import dagger.Provides
+import smartnotes.data.converters.NoteConverter
+import smartnotes.data.converters.PhotoConverter
 import smartnotes.data.local.DatabaseSource
-import smartnotes.data.mapper.NoteMapper
 import smartnotes.data.repository.NoteRepositoryImpl
 import smartnotes.domain.repository.NoteRepository
 
@@ -18,7 +19,11 @@ import smartnotes.domain.repository.NoteRepository
 class RepositoryModule {
 
     @Provides
-    fun provideNoteRepository(db: DatabaseSource): NoteRepository {
-        return NoteRepositoryImpl(db, mapper = NoteMapper())
+    fun provideNoteRepository(
+        db: DatabaseSource,
+        noteConverter: NoteConverter,
+        photoConverter: PhotoConverter
+    ): NoteRepository {
+        return NoteRepositoryImpl(db, noteConverter, photoConverter)
     }
 }

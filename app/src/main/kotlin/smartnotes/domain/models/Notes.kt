@@ -23,6 +23,7 @@ inline class NoteId(val value: UUID)
  * @property text Текст заметки.
  * @property priority Приоритет заметки.
  * @property created Дата создания заметки.
+ * @property photos Коллекция снимков.
  *
  * @author Pavel Annin (https://github.com/anninpavel).
  */
@@ -32,7 +33,8 @@ data class Note(
     val title: String,
     val text: String,
     val priority: NotePriority = NotePriority.NO_PRIORITY,
-    val created: Date = Date()
+    val created: Date = Date(),
+    val photos: List<Photo> = emptyList()
 ) : Parcelable {
 
     @IgnoredOnParcel
